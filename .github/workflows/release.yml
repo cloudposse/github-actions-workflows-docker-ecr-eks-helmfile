@@ -1,30 +1,70 @@
-name: Dockerized Appication ( ECR/EKS/Helmfile ) - Release
+name: |-
+  Release workflow 
+  
+  Promote existing Docker image to release version, deploy it to EKS staging and then production environments.  
+  
+  ### Usage 
+  
+  Create in your repo  __`.github/workflows/release.yaml`__
+  
+  ```yaml
+    name: Release
+    on:
+      release:
+        types: [published]
+    
+    permissions:
+      id-token: write
+      contents: write
+    
+    jobs:
+      perform:
+        uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main
+        with:
+          organization: "${{ github.event.repository.owner.login }}"
+          repository: "${{ github.event.repository.name }}"
+          version: ${{ github.event.release.tag_name }}
+        secrets:
+          github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+          registry: "${{ secrets.ECR_REGISTRY }}"
+          secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+          ecr-region: "${{ secrets.ECR_REGION }}"
+          ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+  ```
+
 on:
   workflow_call:
     inputs:
       organization:
-        required: true
+        description: "Repository owner organization (ex. acme for repo acme/example)"
+        required: false
+        default: ${{ github.event.repository.owner.login }}
         type: string
       repository:
-        required: true
+        description: "Repository name (ex. example for repo acme/example)"
+        required: false
+        default: ${{ github.event.repository.name }}
         type: string
       version:
-        required: true
+        description: "Release version tag"
+        required: false
+        default: ${{ github.event.release.tag_name }}
         type: string
     secrets:
-      ecr-region:
-        required: true
-        description: "AWS region for ECR"
-      ecr-iam-role:
-        required: true
-        description: "IAM for ECR"
       secret-outputs-passphrase:
-        description: "Passphrase for secret outputs"
+        description: "Passphrase to encrypt/decrypt secret outputs with gpg. For more information [read](https://github.com/cloudposse/github-action-secret-outputs)"
         required: true
       registry:
-        description: "Docker registry"
+        description: "ECR ARN"
         required: true
       github-private-actions-pat:
+        description: "Github PAT allow to pull private repos"
+        required: true
+      ecr-region:
+        description: "ECR AWS region"
+        required: true
+      ecr-iam-role:
+        description: "IAM Role ARN provide ECR write/read access"
         required: true
 
 permissions:
