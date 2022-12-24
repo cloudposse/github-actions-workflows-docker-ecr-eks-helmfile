@@ -21,15 +21,15 @@ name: |-
       perform:
         uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main
         with:
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: "${{ github.event.repository.name }}"
-          version: ${{ github.event.release.tag_name }}
+          organization: "&#36;{{ github.event.repository.owner.login }}"
+          repository: "&#36;{{ github.event.repository.name }}"
+          version: &#36;{{ github.event.release.tag_name }}
         secrets:
-          github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
-          registry: "${{ secrets.ECR_REGISTRY }}"
-          secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
-          ecr-region: "${{ secrets.ECR_REGION }}"
-          ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+          github-private-actions-pat: "&#36;{{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+          registry: "&#36;{{ secrets.ECR_REGISTRY }}"
+          secret-outputs-passphrase: "&#36;{{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+          ecr-region: "&#36;{{ secrets.ECR_REGION }}"
+          ecr-iam-role: "&#36;{{ secrets.ECR_IAM_ROLE }}"
   ```
 
 on:
@@ -37,18 +37,15 @@ on:
     inputs:
       organization:
         description: "Repository owner organization (ex. acme for repo acme/example)"
-        required: false
-        default: ${{ github.event.repository.owner.login }}
+        required: true
         type: string
       repository:
         description: "Repository name (ex. example for repo acme/example)"
-        required: false
-        default: ${{ github.event.repository.name }}
+        required: true
         type: string
       version:
         description: "Release version tag"
-        required: false
-        default: ${{ github.event.release.tag_name }}
+        required: true
         type: string
     secrets:
       secret-outputs-passphrase:

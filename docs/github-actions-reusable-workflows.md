@@ -27,17 +27,17 @@ Create in your repo  __`.github/workflows/feature.yaml`__
     do:
       uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main
       with:
-        organization: "${{ github.event.repository.owner.login }}"
-        repository: "${{ github.event.repository.name }}"
-        open: ${{ github.event.pull_request.state == 'open' }}
-        labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
-        ref: ${{ github.event.pull_request.head.ref  }}
+        organization: "&#36;{{ github.event.repository.owner.login }}"
+        repository: "&#36;{{ github.event.repository.name }}"
+        open: &#36;{{ github.event.pull_request.state == 'open' }}
+        labels: &#36;{{ toJSON(github.event.pull_request.labels.*.name) }}
+        ref: &#36;{{ github.event.pull_request.head.ref  }}
       secrets:
-        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
-        registry: "${{ secrets.ECR_REGISTRY }}"
-        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
-        ecr-region: "${{ secrets.ECR_REGION }}"
-        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+        github-private-actions-pat: "&#36;{{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "&#36;{{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "&#36;{{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "&#36;{{ secrets.ECR_REGION }}"
+        ecr-iam-role: "&#36;{{ secrets.ECR_IAM_ROLE }}"
 ```
 
 
@@ -46,11 +46,11 @@ Create in your repo  __`.github/workflows/feature.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| labels | Pull Request labels | string | ${{ toJSON(github.event.pull\_request.labels.\*.name) }} | false |
-| open | Pull Request open/close state. Set true if opened | boolean | ${{ github.event.pull\_request.state == 'open' }} | false |
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
-| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | ${{ github.event.pull\_request.head.ref }} | false |
-| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
+| labels | Pull Request labels | string | [] | false |
+| open | Pull Request open/close state. Set true if opened | boolean | true | false |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
+| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | N/A | true |
+| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
 
 
 
@@ -91,14 +91,14 @@ Create in your repo  __`.github/workflows/main.yaml`__
     do:
       uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/main-branch.yml@main
       with:
-        organization: "${{ github.event.repository.owner.login }}"
-        repository: "${{ github.event.repository.name }}"
+        organization: "&#36;{{ github.event.repository.owner.login }}"
+        repository: "&#36;{{ github.event.repository.name }}"
       secrets:
-        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
-        registry: "${{ secrets.ECR_REGISTRY }}"
-        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
-        ecr-region: "${{ secrets.ECR_REGION }}"
-        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+        github-private-actions-pat: "&#36;{{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "&#36;{{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "&#36;{{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "&#36;{{ secrets.ECR_REGION }}"
+        ecr-iam-role: "&#36;{{ secrets.ECR_IAM_ROLE }}"
 ```
 
 
@@ -107,8 +107,8 @@ Create in your repo  __`.github/workflows/main.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
-| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
+| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
 
 
 
@@ -149,15 +149,15 @@ Create in your repo  __`.github/workflows/release.yaml`__
     perform:
       uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main
       with:
-        organization: "${{ github.event.repository.owner.login }}"
-        repository: "${{ github.event.repository.name }}"
-        version: ${{ github.event.release.tag_name }}
+        organization: "&#36;{{ github.event.repository.owner.login }}"
+        repository: "&#36;{{ github.event.repository.name }}"
+        version: &#36;{{ github.event.release.tag_name }}
       secrets:
-        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
-        registry: "${{ secrets.ECR_REGISTRY }}"
-        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
-        ecr-region: "${{ secrets.ECR_REGION }}"
-        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+        github-private-actions-pat: "&#36;{{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "&#36;{{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "&#36;{{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "&#36;{{ secrets.ECR_REGION }}"
+        ecr-iam-role: "&#36;{{ secrets.ECR_IAM_ROLE }}"
 ```
 
 
@@ -166,9 +166,9 @@ Create in your repo  __`.github/workflows/release.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
-| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
-| version | Release version tag | string | ${{ github.event.release.tag\_name }} | false |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
+| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
+| version | Release version tag | string | N/A | true |
 
 
 
