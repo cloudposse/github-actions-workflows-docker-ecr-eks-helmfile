@@ -95,7 +95,43 @@ Application repository reference this reusable workflows should follows this str
 
 
 
-## Features branch (Pull request) workflow <br><br>Build, test Docker image, deploy it to EKS preview environment depends of PR labels  <br><br>### Usage <br><br>Create in your repo  \_\_`.github/workflows/feature.yaml`\_\_<br><br>```yaml<br>  name: Feature Branch<br>  on:<br>    pull\_request:<br>      branches: [ 'master' ]<br>      types: [opened, synchronize, reopened, closed, labeled, unlabeled]<br><br>  permissions:<br>    pull-requests: write<br>    deployments: write<br>    id-token: write<br>    contents: read<br><br>  jobs:<br>    do:<br>      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main<br>      with:<br>        organization: "${{ github.event.repository.owner.login }}"<br>        repository: "${{ github.event.repository.name }}"<br>        open: ${{ github.event.pull\_request.state == 'open' }}<br>        labels: ${{ toJSON(github.event.pull\_request.labels.\*.name) }}<br>        ref: ${{ github.event.pull\_request.head.ref  }}<br>      secrets:<br>        github-private-actions-pat: "${{ secrets.PUBLIC\_REPO\_ACCESS\_TOKEN }}"<br>        registry: "${{ secrets.ECR\_REGISTRY }}"<br>        secret-outputs-passphrase: "${{ secrets.GHA\_SECRET\_OUTPUT\_PASSPHRASE }}"<br>        ecr-region: "${{ secrets.ECR\_REGION }}"<br>        ecr-iam-role: "${{ secrets.ECR\_IAM\_ROLE }}"<br>```
+## Features branch (Pull request) workflow 
+
+Build, test Docker image, deploy it to EKS preview environment depends of PR labels  
+
+### Usage 
+
+Create in your repo  __`.github/workflows/feature.yaml`__
+
+```yaml
+  name: Feature Branch
+  on:
+    pull_request:
+      branches: [ 'master' ]
+      types: [opened, synchronize, reopened, closed, labeled, unlabeled]
+  
+  permissions:
+    pull-requests: write
+    deployments: write
+    id-token: write
+    contents: read
+  
+  jobs:
+    do:
+      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main
+      with:
+        organization: "${{ github.event.repository.owner.login }}"
+        repository: "${{ github.event.repository.name }}"
+        open: ${{ github.event.pull_request.state == 'open' }}
+        labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        ref: ${{ github.event.pull_request.head.ref  }}
+      secrets:
+        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "${{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "${{ secrets.ECR_REGION }}"
+        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+```
 
 
 
@@ -126,7 +162,37 @@ Application repository reference this reusable workflows should follows this str
 
 
 
-## Main branch workflow<br><br>Build, test Docker image, deploy it to EKS dev environment and draft new release  <br><br>### Usage <br><br>Create in your repo  \_\_`.github/workflows/main.yaml`\_\_<br><br>```yaml<br>  name: Main Branch<br>  on:<br>    push:<br>      branches: [ master ]<br><br>  permissions:<br>    contents: write<br>    id-token: write<br><br>  jobs:<br>    do:<br>      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/main-branch.yml@main<br>      with:<br>        organization: "${{ github.event.repository.owner.login }}"<br>        repository: "${{ github.event.repository.name }}"<br>      secrets:<br>        github-private-actions-pat: "${{ secrets.PUBLIC\_REPO\_ACCESS\_TOKEN }}"<br>        registry: "${{ secrets.ECR\_REGISTRY }}"<br>        secret-outputs-passphrase: "${{ secrets.GHA\_SECRET\_OUTPUT\_PASSPHRASE }}"<br>        ecr-region: "${{ secrets.ECR\_REGION }}"<br>        ecr-iam-role: "${{ secrets.ECR\_IAM\_ROLE }}"<br>```
+## Main branch workflow
+
+Build, test Docker image, deploy it to EKS dev environment and draft new release  
+
+### Usage 
+
+Create in your repo  __`.github/workflows/main.yaml`__
+
+```yaml
+  name: Main Branch
+  on:
+    push:
+      branches: [ master ]
+  
+  permissions:
+    contents: write
+    id-token: write
+  
+  jobs:
+    do:
+      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/main-branch.yml@main
+      with:
+        organization: "${{ github.event.repository.owner.login }}"
+        repository: "${{ github.event.repository.name }}"
+      secrets:
+        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "${{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "${{ secrets.ECR_REGION }}"
+        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+```
 
 
 
@@ -154,7 +220,38 @@ Application repository reference this reusable workflows should follows this str
 
 
 
-## Release workflow <br><br>Promote existing Docker image to release version, deploy it to EKS staging and then production environments.  <br><br>### Usage <br><br>Create in your repo  \_\_`.github/workflows/release.yaml`\_\_<br><br>```yaml<br>  name: Release<br>  on:<br>    release:<br>      types: [published]<br><br>  permissions:<br>    id-token: write<br>    contents: write<br><br>  jobs:<br>    perform:<br>      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main<br>      with:<br>        organization: "${{ github.event.repository.owner.login }}"<br>        repository: "${{ github.event.repository.name }}"<br>        version: ${{ github.event.release.tag\_name }}<br>      secrets:<br>        github-private-actions-pat: "${{ secrets.PUBLIC\_REPO\_ACCESS\_TOKEN }}"<br>        registry: "${{ secrets.ECR\_REGISTRY }}"<br>        secret-outputs-passphrase: "${{ secrets.GHA\_SECRET\_OUTPUT\_PASSPHRASE }}"<br>        ecr-region: "${{ secrets.ECR\_REGION }}"<br>        ecr-iam-role: "${{ secrets.ECR\_IAM\_ROLE }}"<br>```
+## Release workflow 
+
+Promote existing Docker image to release version, deploy it to EKS staging and then production environments.  
+
+### Usage 
+
+Create in your repo  __`.github/workflows/release.yaml`__
+
+```yaml
+  name: Release
+  on:
+    release:
+      types: [published]
+  
+  permissions:
+    id-token: write
+    contents: write
+  
+  jobs:
+    perform:
+      uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main
+      with:
+        organization: "${{ github.event.repository.owner.login }}"
+        repository: "${{ github.event.repository.name }}"
+        version: ${{ github.event.release.tag_name }}
+      secrets:
+        github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+        registry: "${{ secrets.ECR_REGISTRY }}"
+        secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+        ecr-region: "${{ secrets.ECR_REGION }}"
+        ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+```
 
 
 
