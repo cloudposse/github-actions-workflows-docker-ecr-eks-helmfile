@@ -118,7 +118,7 @@ jobs:
 
   reintegrate:
     uses: cloudposse/github-action-workflows/.github/workflows/controller-hotfix-reintegrate.yml@main
-    needs: [promote]
+    needs: [ cd ]
     with:
       ref: ${{ github.ref }}
       target_branch: ${{ inputs.default_branch }}
