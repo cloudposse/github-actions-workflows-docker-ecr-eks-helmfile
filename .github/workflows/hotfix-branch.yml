@@ -1,17 +1,17 @@
 name: |-
-  Features branch (Pull request) workflow 
+  Hotfix branch (Pull request into release/* branches) workflow 
   
-  Build, test Docker image, deploy it to EKS `preview` environment depends of PR labels  
+  Build, test Docker image, deploy it to EKS `hotfix` environment depends of PR labels  
   
   ### Usage 
   
-  Create in your repo  __`.github/workflows/feature.yaml`__
+  Create in your repo  __`.github/workflows/hotfix-branch.yaml`__
   
   ```yaml
-    name: Feature Branch
+    name: Hotfix Branch
     on:
       pull_request:
-        branches: [ 'master' ]
+        branches: [ 'release/**' ]
         types: [opened, synchronize, reopened, closed, labeled, unlabeled]
     
     permissions:
@@ -22,7 +22,7 @@ name: |-
     
     jobs:
       do:
-        uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main
+        uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/hotfix-branch.yml@main
         with:
           organization: "$\{\{ github.event.repository.owner.login \}\}"
           repository: "$\{\{ github.event.repository.name \}\}"
@@ -86,7 +86,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
@@ -112,9 +112,9 @@ jobs:
       open: ${{ inputs.open }}
       labels: ${{ inputs.labels }}
       ref: ${{ inputs.ref }}
-      exclusive: false
+      exclusive: true
       env-label: |
-        preview: deploy
+        hotfix: deploy
     secrets:
       secret-outputs-passphrase: ${{ secrets.secret-outputs-passphrase }}
       github-private-actions-pat: ${{ secrets.github-private-actions-pat }}

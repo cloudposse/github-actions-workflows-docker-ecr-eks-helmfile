@@ -1,7 +1,7 @@
 name: |-
   Release workflow 
   
-  Promote existing Docker image to release version, deploy it to EKS staging and then production environments.  
+  Promote existing Docker image to release version, deploy it to EKS `staging` and then `production` environments.  
   
   ### Usage 
   

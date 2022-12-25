@@ -1,34 +1,28 @@
 name: |-
-  Features branch (Pull request) workflow 
+  Hotfix release workflow
   
-  Build, test Docker image, deploy it to EKS `preview` environment depends of PR labels  
+  Build, test Docker image, deploy it to EKS production environment and reintegrate `hotfix` into the main branch  
   
   ### Usage 
   
-  Create in your repo  __`.github/workflows/feature.yaml`__
+  Create in your repo  __`.github/workflows/hotfix-release.yaml`__
   
   ```yaml
-    name: Feature Branch
+    name: Hotfix Release
     on:
-      pull_request:
-        branches: [ 'master' ]
-        types: [opened, synchronize, reopened, closed, labeled, unlabeled]
+      push:
+        branches: [ 'release/**' ]
     
     permissions:
-      pull-requests: write
-      deployments: write
+      contents: write
       id-token: write
-      contents: read
     
     jobs:
       do:
-        uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main
+        uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/hotfix-release.yml@main
         with:
           organization: "$\{\{ github.event.repository.owner.login \}\}"
           repository: "$\{\{ github.event.repository.name \}\}"
-          open: $\{\{ github.event.pull_request.state == 'open' \}\}
-          labels: $\{\{ toJSON(github.event.pull_request.labels.*.name) \}\}
-          ref: $\{\{ github.event.pull_request.head.ref  \}\}
         secrets:
           github-private-actions-pat: "$\{\{ secrets.PUBLIC_REPO_ACCESS_TOKEN \}\}"
           registry: "$\{\{ secrets.ECR_REGISTRY \}\}"
@@ -48,20 +42,11 @@ on:
         description: "Repository name (ex. example for repo acme/example)"
         required: true
         type: string
-      ref:
-        description: "The fully-formed ref of the branch or tag that triggered the workflow run"
+      default_branch:
+        description: "Default branch for this repo"
         required: true
         type: string
-      open:
-        description: "Pull Request open/close state. Set true if opened"
-        required: false
-        type: boolean
-        default: true
-      labels:
-        description: "Pull Request labels"
-        required: false
-        default: []
-        type: string
+        default: main
     secrets:
       secret-outputs-passphrase:
         description: "Passphrase to encrypt/decrypt secret outputs with gpg. For more information [read](https://github.com/cloudposse/github-action-secret-outputs)"
@@ -80,13 +65,11 @@ on:
         required: true
 
 permissions:
-  pull-requests: write
-  deployments: write
+  contents: write
   id-token: write
-  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
@@ -101,20 +84,44 @@ jobs:
       registry: ${{ secrets.registry }}
       secret-outputs-passphrase: ${{ secrets.secret-outputs-passphrase }}
 
-  cd:
-    uses: cloudposse/github-actions-workflows/.github/workflows/cd-preview-helmfile.yml@main
-    needs: [ ci ]
-    if: ${{ always() }}
+  release:
+    needs: [ci]
+    uses: cloudposse/github-actions-workflows/.github/workflows/controller-hotfix-release.yml@main
     with:
-      image: ${{ needs.ci.outputs.image }}
-      tag: ${{ needs.ci.outputs.tag }}
+      ref: ${{ github.sha }}
+
+  promote:
+    needs: [release]
+    uses: cloudposse/github-action-workflows/.github/workflows/ci-dockerized-app-promote.yml@main
+    with:
+      organization: ${{ inputs.organization }}
       repository: ${{ inputs.repository }}
-      open: ${{ inputs.open }}
-      labels: ${{ inputs.labels }}
-      ref: ${{ inputs.ref }}
-      exclusive: false
-      env-label: |
-        preview: deploy
+      version: ${{ needs.release.outputs.version }}
+    secrets:
+      ecr-region: ${{ secrets.ecr-region }}
+      ecr-iam-role: ${{ secrets.ecr-iam-role }}
+      registry: ${{ secrets.registry }}
+      secret-outputs-passphrase: ${{ secrets.secret-outputs-passphrase }}
+
+  cd:
+    name: cd / production
+    uses: cloudposse/github-actions-workflows/.github/workflows/cd-helmfile.yml@main
+    needs: [ promote ]
+    with:
+      image: ${{ needs.promote.outputs.image }}
+      tag: ${{ needs.promote.outputs.tag }}
+      repository: ${{ inputs.repository }}
+      environment: production
     secrets:
       secret-outputs-passphrase: ${{ secrets.secret-outputs-passphrase }}
       github-private-actions-pat: ${{ secrets.github-private-actions-pat }}
+
+  reintegrate:
+    uses: cloudposse/github-action-workflows/.github/workflows/controller-hotfix-reintegrate.yml@main
+    needs: [promote]
+    with:
+      ref: ${{ github.ref }}
+      target_branch: ${{ inputs.default_branch }}
+    secrets:
+      github-private-actions-pat: ${{ secrets.github-private-actions-pat }}
+
