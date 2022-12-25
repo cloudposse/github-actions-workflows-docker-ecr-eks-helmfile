@@ -21,14 +21,14 @@ name: |-
       do:
         uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/main-branch.yml@main
         with:
-          organization: "&#36;{{ github.event.repository.owner.login }}"
-          repository: "&#36;{{ github.event.repository.name }}"
+          organization: "$\{\{ github.event.repository.owner.login \}\}"
+          repository: "$\{\{ github.event.repository.name \}\}"
         secrets:
-          github-private-actions-pat: "&#36;{{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
-          registry: "&#36;{{ secrets.ECR_REGISTRY }}"
-          secret-outputs-passphrase: "&#36;{{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
-          ecr-region: "&#36;{{ secrets.ECR_REGION }}"
-          ecr-iam-role: "&#36;{{ secrets.ECR_IAM_ROLE }}"
+          github-private-actions-pat: "$\{\{ secrets.PUBLIC_REPO_ACCESS_TOKEN \}\}"
+          registry: "$\{\{ secrets.ECR_REGISTRY \}\}"
+          secret-outputs-passphrase: "$\{\{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE \}\}"
+          ecr-region: "$\{\{ secrets.ECR_REGION \}\}"
+          ecr-iam-role: "$\{\{ secrets.ECR_IAM_ROLE \}\}"
   ```
 
 on:
