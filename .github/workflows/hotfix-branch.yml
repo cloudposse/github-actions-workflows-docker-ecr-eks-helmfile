@@ -42,25 +42,28 @@ on:
     inputs:
       organization:
         description: "Repository owner organization (ex. acme for repo acme/example)"
-        required: true
+        required: false
+        default: ${{ github.event.repository.owner.login }}
         type: string
       repository:
         description: "Repository name (ex. example for repo acme/example)"
-        required: true
+        required: false
+        default: ${{ github.event.repository.name }}
         type: string
       ref:
         description: "The fully-formed ref of the branch or tag that triggered the workflow run"
-        required: true
+        required: false
+        default: ${{ github.event.pull_request.head.ref }}
         type: string
       open:
         description: "Pull Request open/close state. Set true if opened"
         required: false
         type: boolean
-        default: true
+        default: ${{ github.event.pull_request.state == 'open' }}
       labels:
         description: "Pull Request labels"
         required: false
-        default: []
+        default: ${{ toJSON(github.event.pull_request.labels.*.name) }}
         type: string
     secrets:
       secret-outputs-passphrase:

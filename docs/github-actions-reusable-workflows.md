@@ -57,11 +57,11 @@ Create in your repo  __`.github/workflows/feature.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| labels | Pull Request labels | string | [] | false |
-| open | Pull Request open/close state. Set true if opened | boolean | true | false |
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
-| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | N/A | true |
-| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
+| labels | Pull Request labels | string | ${{ toJSON(github.event.pull\_request.labels.\*.name) }} | false |
+| open | Pull Request open/close state. Set true if opened | boolean | ${{ github.event.pull\_request.state == 'open' }} | false |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
+| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | ${{ github.event.pull\_request.head.ref }} | false |
+| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
 
 
 
@@ -124,11 +124,11 @@ Create in your repo  __`.github/workflows/hotfix-branch.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| labels | Pull Request labels | string | [] | false |
-| open | Pull Request open/close state. Set true if opened | boolean | true | false |
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
-| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | N/A | true |
-| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
+| labels | Pull Request labels | string | ${{ toJSON(github.event.pull\_request.labels.\*.name) }} | false |
+| open | Pull Request open/close state. Set true if opened | boolean | ${{ github.event.pull\_request.state == 'open' }} | false |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
+| ref | The fully-formed ref of the branch or tag that triggered the workflow run | string | ${{ github.event.pull\_request.head.ref }} | false |
+| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
 
 
 
@@ -238,8 +238,8 @@ Create in your repo  __`.github/workflows/hotfix-release.yaml`__
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
 | default\_branch | Default branch for this repo | string | main | true |
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
-| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
+| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
 
 
 
@@ -296,8 +296,8 @@ Create in your repo  __`.github/workflows/main.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
-| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
+| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
 
 
 
@@ -355,9 +355,9 @@ Create in your repo  __`.github/workflows/release.yaml`__
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| organization | Repository owner organization (ex. acme for repo acme/example) | string | N/A | true |
-| repository | Repository name (ex. example for repo acme/example) | string | N/A | true |
-| version | Release version tag | string | N/A | true |
+| organization | Repository owner organization (ex. acme for repo acme/example) | string | ${{ github.event.repository.owner.login }} | false |
+| repository | Repository name (ex. example for repo acme/example) | string | ${{ github.event.repository.name }} | false |
+| version | Release version tag | string | ${{ github.event.release.tag\_name }} | false |
 
 
 

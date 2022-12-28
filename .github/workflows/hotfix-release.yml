@@ -36,11 +36,13 @@ on:
     inputs:
       organization:
         description: "Repository owner organization (ex. acme for repo acme/example)"
-        required: true
+        required: false
+        default: ${{ github.event.repository.owner.login }}
         type: string
       repository:
         description: "Repository name (ex. example for repo acme/example)"
-        required: true
+        required: false
+        default: ${{ github.event.repository.name }}
         type: string
       default_branch:
         description: "Default branch for this repo"
