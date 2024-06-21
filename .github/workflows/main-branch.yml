@@ -44,6 +44,11 @@ on:
         required: false
         default: ${{ github.event.repository.name }}
         type: string
+      runs-on:
+        description: "Overrides job runs-on setting (json-encoded list)"
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
     secrets:
       secret-outputs-passphrase:
         description: "Passphrase to encrypt/decrypt secret outputs with gpg. For more information [read](https://github.com/cloudposse/github-action-secret-outputs)"
@@ -75,6 +80,7 @@ jobs:
     with:
       organization: ${{ inputs.organization }}
       repository: ${{ inputs.repository }}
+      runs-on: ${{ inputs.runs-on }}
     secrets:
       ecr-region: ${{ secrets.ecr-region }}
       ecr-iam-role: ${{ secrets.ecr-iam-role }}
@@ -89,6 +95,7 @@ jobs:
       tag: ${{ needs.ci.outputs.tag }}
       repository: ${{ inputs.repository }}
       environment: dev
+      runs-on: ${{ inputs.runs-on }}
     secrets:
       secret-outputs-passphrase: ${{ secrets.secret-outputs-passphrase }}
       github-private-actions-pat: ${{ secrets.github-private-actions-pat }}
@@ -96,5 +103,7 @@ jobs:
   release:
     uses:  cloudposse/github-actions-workflows/.github/workflows/controller-draft-release.yml@main
     needs: [ cd ]
+    with:
+      runs-on: ${{ inputs.runs-on }}
     secrets:
       github-private-actions-pat: ${{ secrets.github-private-actions-pat }}

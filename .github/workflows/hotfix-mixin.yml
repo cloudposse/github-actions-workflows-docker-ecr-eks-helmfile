@@ -43,6 +43,11 @@ on:
         description: "Release version tag"
         required: true
         type: string
+      runs-on:
+        description: "Overrides job runs-on setting (json-encoded list)"
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
 
 permissions:
   id-token: write
@@ -57,3 +62,4 @@ jobs:
     uses: cloudposse/github-action-workflows/.github/workflows/controller-hotfix-release-branch.yml@main
     with:
       version: ${{ inputs.version }}
+      runs-on: ${{ inputs.runs-on }}
